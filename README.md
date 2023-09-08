@@ -9,8 +9,8 @@
     <a href="https://github.com/codefuse-ai/FasterTransformer4CodeFuse">
         <img alt="forks" src="https://img.shields.io/github/forks/codefuse-ai/FasterTransformer4CodeFuse?style=social" />
     </a>
-    <a href="https://opensource.org/licenses/MIT">
-      <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
+    <a href="https://opensource.org/licenses/Apache-2.0">
+      <img alt="License: apache 2.0" src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" />
     </a>
     <a href="https://github.com/codefuse-ai/FasterTransformer4CodeFuse/issues">
       <img alt="Open Issues" src="https://img.shields.io/github/issues-raw/codefuse-ai/FasterTransformer4CodeFuse" />
@@ -28,12 +28,12 @@ Provide high-performance model inference, mainly supporting the CodeFuse model f
 
 Compared to the [original FT](https://github.com/NVIDIA/FasterTransformer), this repo has these features:
 
-- [x] Int8 quantization of CodeFuse model
-- [x] Prompt does not require a complete word at the end
-- [x] Python API
-- [x] Streaming Output with Python API
-- [x] Faster model load speed
-- [x] Some bugfix
+- :white_check_mark: Int8 quantization of CodeFuse model
+- :white_check_mark: Prompt does not require a complete word at the end
+- :white_check_mark: Python API
+- :white_check_mark: Streaming Output with Python API
+- :white_check_mark: Higher model load speed
+- :white_check_mark: Some bugfix
 
 ## Performance
 > Batch size: 1
@@ -104,7 +104,7 @@ Compared to the [original FT](https://github.com/NVIDIA/FasterTransformer), this
 
 We run in the container environment: `nvcr.io/nvidia/pytorch:22.09-py3`。
 
-#### 1. Install requirementss
+#### 1. Install requirements
 
 ```
 pip install --no-cache-dir pybind11==2.6.2 transformers accelerate sentencepiece
@@ -140,7 +140,7 @@ python ../examples/pytorch/codefuse/huggingface_convert.py \
        -model_name gptneox
 ```
 
-You can use `examples/pytorch/codefuse/quant_and_save.py` script to convert fp16 or fp32 FasterTransformer checkpoint files to int8 files and scales, getting faster model load speed and smaller checkpoint files.
+You can use `examples/pytorch/codefuse/quant_and_save.py` script to convert fp16 or fp32 FasterTransformer checkpoint files to int8 files and scales, getting higher model load speed and smaller checkpoint files.
 ```
 export MODEL_NAME=codefuse
 export TENSOR_PARA_SIZE=2

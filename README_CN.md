@@ -9,8 +9,8 @@
     <a href="https://github.com/codefuse-ai/FasterTransformer4CodeFuse">
         <img alt="forks" src="https://img.shields.io/github/forks/codefuse-ai/FasterTransformer4CodeFuse?style=social" />
     </a>
-    <a href="https://opensource.org/licenses/MIT">
-      <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
+    <a href="https://opensource.org/licenses/Apache-2.0">
+      <img alt="License: apache 2.0" src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" />
     </a>
     <a href="https://github.com/codefuse-ai/FasterTransformer4CodeFuse/issues">
       <img alt="Open Issues" src="https://img.shields.io/github/issues-raw/codefuse-ai/FasterTransformer4CodeFuse" />
@@ -28,12 +28,12 @@
 
 与[原版FasterTransformer](https://github.com/NVIDIA/FasterTransformer)相比增加了：
 
-- [x] CodeFuse模型的int8量化
-- [x] prompt结尾无需完整单词
-- [x] python api
-- [x] python流式输出
-- [x] 模型加载提速
-- [x] 一些bugfix
+- :white_check_mark: CodeFuse模型的int8量化
+- :white_check_mark: prompt结尾无需完整单词
+- :white_check_mark: python api
+- :white_check_mark: python流式输出
+- :white_check_mark: 模型加载提速
+- :white_check_mark: 一些bugfix
 
 ## 性能指标
 > Batch size: 1
