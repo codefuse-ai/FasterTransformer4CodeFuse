@@ -1,7 +1,7 @@
 # FasterTransformer4CodeFuse
 
 <div align="center">
-<p><img src="./assets/LOGO.png" width="100%" /></p>
+<p><img src="./assets/LOGO.png" width="50%" /></p>
 <p>
     <a href="https://github.com/codefuse-ai/FasterTransformer4CodeFuse">
         <img alt="stars" src="https://img.shields.io/github/stars/codefuse-ai/FasterTransformer4CodeFuse?style=social" />
