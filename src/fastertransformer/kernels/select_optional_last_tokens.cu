@@ -40,6 +40,14 @@ select_optional_last_tokens(T*         logits,                       // [batch_s
     const int batch_beam_idx   = batch_idx * beam_width + beam_idx;
     const int block_thread_idx = block_idx * blocks_per_beam + thread_idx;
 
+    const int vocab_size_per_block = shared_size * 8;
+    const int block_field_start_idx = vocab_size_per_block * block_idx;
+
+    const int thread_field_length = vocab_size_per_block / threads_per_block;
+
+    const int thread_field_start_idx = block_field_start_idx + thread_field_length * thread_idx;
+    const int thread_field_end_idx   = block_field_start_idx + thread_field_length * (thread_idx + 1);
+
     // vocab_size_per_block bits
     extern __shared__ char smem[];
 
@@ -49,12 +57,12 @@ select_optional_last_tokens(T*         logits,                       // [batch_s
     __syncthreads();
 
     int offset = max_optional_last_tokens_count * batch_idx;
-    for (int idx = offset + thread_idx; idx < offset + max_optional_last_tokens_count; idx += threads_per_block) {
+    for (int idx = offset; idx < offset + max_optional_last_tokens_count; idx ++) {
 
         int last_token = optional_last_tokens[idx];
 
-        if (last_token >= 0 && last_token % blocks_per_beam == block_idx) {
-            int smem_idx_bit   = last_token / blocks_per_beam;
+        if (last_token >= 0 && last_token >= thread_field_start_idx && last_token < thread_field_end_idx) {
+            int smem_idx_bit   = last_token - block_field_start_idx;
             int smem_idx_char  = smem_idx_bit / 8;
             int smem_idx_inner = smem_idx_bit % 8;
             smem[smem_idx_char] |= (1 << smem_idx_inner);
@@ -64,13 +72,9 @@ select_optional_last_tokens(T*         logits,                       // [batch_s
     __syncthreads();
 
     offset = batch_beam_idx * vocab_size_padded;
-    // walk all tokens whose token_id % blocks_per_beam == block_idx
-    // and (token_id / blocks_per_beam) % threads_per_block == thread_idx
-    // token_id = block_idx + blocks_per_beam * (thread_idx + n * threads_per_block)
-    for (int token_id = block_idx + blocks_per_beam * thread_idx; token_id < vocab_size_padded;
-         token_id += threads_per_beam) {
+    for (int token_id = thread_field_start_idx; token_id < vocab_size_padded && token_id < thread_field_end_idx; token_id ++) {
 
-        int smem_idx_bit   = token_id / blocks_per_beam;
+        int smem_idx_bit   = token_id - block_field_start_idx;
         int smem_idx_char  = smem_idx_bit / 8;
         int smem_idx_inner = smem_idx_bit % 8;
         if ((smem[smem_idx_char] & (1 << smem_idx_inner)) == 0) {
@@ -92,7 +96,9 @@ void invokeSelectOptionalLastTokens(T*           logits,                // [batc
     const int threads_per_block = 128;
     const int threads_per_beam  = threads_per_block * blocks_per_beam;
 
-    const int vocab_size_tmp       = (vocab_size_padded + threads_per_beam - 1) / threads_per_beam * threads_per_beam;
+    const int divisor = threads_per_beam * 8;
+
+    const int vocab_size_tmp       = (vocab_size_padded + divisor - 1) / divisor * divisor;
     const int vocab_size_per_block = vocab_size_tmp / blocks_per_beam;
     const int shared_size          = vocab_size_per_block / 8;
 
